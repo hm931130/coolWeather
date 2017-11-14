@@ -2,10 +2,12 @@ package com.hm.coolweather.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.hm.coolweather.db.City;
 import com.hm.coolweather.db.County;
 import com.hm.coolweather.db.Provice;
+import com.hm.coolweather.gson.Weather;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +66,7 @@ public class Utility {
                     County county = new County();
                     county.setCityId(id);
                     county.setCountyName(countyObj.getString("name"));
-                    county.setWeatherId("weather_id");
+                    county.setWeatherId(countyObj.getString("weather_id"));
                     county.save();
                 }
                 return true;
@@ -74,5 +76,17 @@ public class Utility {
 
         }
         return false;
+    }
+
+    public static Weather handlerWeatherResponse(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
