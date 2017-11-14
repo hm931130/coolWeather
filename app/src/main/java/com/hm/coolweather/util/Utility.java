@@ -17,7 +17,6 @@ import org.json.JSONObject;
 
 public class Utility {
     public static boolean handleProvinceResponse(String responseText) {
-
         if (!TextUtils.isEmpty(responseText)) {
             try {
                 JSONArray allProvinces = new JSONArray(responseText);
@@ -25,7 +24,7 @@ public class Utility {
                     JSONObject provinceObj = allProvinces.getJSONObject(i);
                     Provice province = new Provice();
                     province.setProvinceName(provinceObj.getString("name"));
-                    province.setProviceCode(provinceObj.getInt("code"));
+                    province.setProviceCode(provinceObj.getInt("id"));
                     province.save();
                 }
                 return true;
@@ -37,7 +36,6 @@ public class Utility {
     }
 
     public static boolean handlerCityResponse(String responseText, int id) {
-
         if (!TextUtils.isEmpty(responseText)) {
             try {
                 JSONArray allCities = new JSONArray(responseText);
@@ -45,7 +43,7 @@ public class Utility {
                     JSONObject cityObj = allCities.getJSONObject(i);
                     City city = new City();
                     city.setCityCode(cityObj.getInt("id"));
-                    city.setCityName("name");
+                    city.setCityName(cityObj.getString("name"));
                     city.setProviceId(id);
                     city.save();
                 }

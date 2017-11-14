@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hm.coolweather.db.City;
 import com.hm.coolweather.db.County;
@@ -89,7 +90,7 @@ public class ChooseFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (currentLevel == LEVEL_PROVICE) {
                     selectedProvice = proviceList.get(position);
-                    queryCounties();
+                    queryCities();
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
@@ -161,7 +162,13 @@ public class ChooseFragment extends Fragment {
 
             @Override
             public void onFailure(Call call, IOException e) {
-
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                        Toast.makeText(getActivity(), "请求失败!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -170,7 +177,7 @@ public class ChooseFragment extends Fragment {
     private void queryCities() {
         titleText.setText(selectedProvice.getProvinceName());
         backButton.setVisibility(View.VISIBLE);
-        cityList = DataSupport.where("provinceid = ?", String.valueOf(selectedProvice.getId())).find(City.class);
+        cityList = DataSupport.where("proviceId = ?", String.valueOf(selectedProvice.getId())).find(City.class);
         if (cityList.size() > 0) {
             dataList.clear();
             for (City city : cityList) {
